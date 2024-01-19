@@ -1,7 +1,9 @@
 package com.app.UserRegistration.repository;
 
-import com.app.UserRegistration.model.Users;
+
+import com.app.UserRegistration.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository extends JpaRepository<Users, Long> {
+public interface UserRepository extends JpaRepository<User, Long> {
+    public User findByUsername(String username);
 }

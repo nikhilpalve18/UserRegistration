@@ -4,13 +4,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.Data;
+import lombok.*;
 
 @Data
-@Entity
-public class Users {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class UserDTO {
+
     private Long id;
     private String firstName;
     private String lastName;
@@ -18,7 +19,4 @@ public class Users {
     private String password;
     private String mobileNumber;
 
-    public String getFirstName(){
-        return this.firstName;
-    }
 }
