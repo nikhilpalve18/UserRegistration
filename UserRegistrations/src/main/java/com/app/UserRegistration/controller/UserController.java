@@ -12,35 +12,35 @@ import java.util.List;
 @CrossOrigin("*")
 public class UserController {
 
-    // Attributes
+    /* Attributes */
     private final UserService userService;
 
-    // Constructor
+    /* Constructor */
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
-    // Methods
-    // This api saves the user information.
-    @PostMapping("/")
+    /* Methods
+     This api saves the user information. */
+    @PostMapping("/save-user")
     public void saveUser(@RequestBody UserDTO userDTO) throws Exception {
         this.userService.createUser(userDTO);
     }
 
-    // This api retrieves the information of a user.
+    /* This api retrieves the information of a user. */
     @GetMapping("/{username}")
     public UserDTO getUserInformation(@PathVariable("username") String username){
         return this.userService.getUser(username);
     }
 
-    // This api deletes the user
-    @DeleteMapping("/{userId}")
+    /* This api deletes the user */
+    @DeleteMapping("/delete-user/{userId}")
     public void deleteUser(@PathVariable("userId") Long userId) {
         this.userService.deleteUser(userId);
     }
 
-    // This api retrieves all the users from DB.
-    @GetMapping("/all")
+    /* This api retrieves all the users from DB. */
+    @GetMapping("/all-users")
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = this.userService.getAllUsers();
         return ResponseEntity.ok(users);

@@ -10,24 +10,23 @@ import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
-    // attributes
+    /* attributes */
     private final UserRepository userRepository;
 
-    // constructor
+    /* constructor */
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-    // methods
-
-    // Creating a new user
+    /* methods
+     Creating a new user */
     @Override
     public void createUser(UserDTO userDTO) throws Exception {
         User user = User.builder().firstName(userDTO.getFirstName()).
                 lastName(userDTO.getLastName()).password(userDTO.getPassword()).
                 username(userDTO.getUsername()).mobileNumber(userDTO.getMobileNumber()).build();
 
-        // check for duplicate users
+        /* check for duplicate users */
         User local = this.userRepository.findByUsername(user.getUsername());
         if(local != null) {
             System.out.println("User is already present");
@@ -38,7 +37,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    // get the details of user by its username
+    /* get the details of user by its username */
     @Override
     public UserDTO getUser(String username) {
         User user = this.userRepository.findByUsername(username);
@@ -49,13 +48,13 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    // delete user by its Id
+    /* delete user by its Id */
     @Override
     public void deleteUser(Long userId) {
         this.userRepository.deleteById(userId);
     }
 
-    // get all the registered users
+    /* get all the registered users */
     @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();
