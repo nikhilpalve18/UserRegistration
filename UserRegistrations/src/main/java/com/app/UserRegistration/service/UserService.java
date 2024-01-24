@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface UserService {
     public void createUser(UserDTO userDTO) throws Exception;
-    public UserDTO getUser(String username);
+    public UserDTO getUser(String username) throws Exception;
 
     public void deleteUser(Long userId);
 
