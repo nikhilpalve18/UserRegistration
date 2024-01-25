@@ -1,5 +1,6 @@
 package com.app.UserRegistration.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,11 +18,11 @@ public class UserDTO {
 
     private Long id;
 
-    @NotEmpty
+    @NotEmpty(message = "Firstname cannot be empty")
     private String firstName;
-    @NotEmpty
+    @NotEmpty(message = "Lastname cannot be empty")
     private String lastName;
-    @NotEmpty
+    @NotEmpty(message = "Username cannot be empty")
     private String username;
 
     @Size(min = 8, message = "Password must be at least of 8 characters")
@@ -36,5 +37,10 @@ public class UserDTO {
     @Size(min = 10, max = 10, message = "Mobile number must be 10 digits")
     @Pattern(regexp = "^[0-9]{10}$", message = "Mobile number must contain only digits")
     private String mobileNumber;
+
+    @JsonIgnore
+    public String getPassword() {
+        return password;
+    }
 
 }
