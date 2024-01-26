@@ -32,19 +32,20 @@ public class UserController {
             return ResponseEntity.ok("User created successfully");
     }
 
+    @Operation(summary = "Get user Information", description = "This api helps in getting user information with username")
     @GetMapping("/{username}")
     public ResponseEntity<?> getUserInformation(@PathVariable("username") String username) throws Exception {
         return ResponseEntity.ok(this.userService.getUser(username));
     }
 
-
+    @Operation(summary = "Delete user", description = "This api helps in deleting the user by userId")
     @DeleteMapping("/delete-user/{userId}")
-    public ResponseEntity<String> deleteUser(@PathVariable("userId") Long userId) {
+    public ResponseEntity<String> deleteUser(@PathVariable("userId") Long userId) throws Exception {
             this.userService.deleteUser(userId);
             return ResponseEntity.ok("User deleted successfully");
     }
 
-
+    @Operation(summary = "Retrieve all the users", description = "This api helps in retrieving all the users from database")
     @GetMapping("/all-users")
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = this.userService.getAllUsers();

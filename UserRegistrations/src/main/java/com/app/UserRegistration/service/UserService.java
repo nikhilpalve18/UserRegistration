@@ -9,7 +9,7 @@ public interface UserService {
     public void createUser(UserDTO userDTO) throws Exception;
     public UserDTO getUser(String username) throws Exception;
 
-    public void deleteUser(Long userId);
+    public void deleteUser(Long userId) throws Exception;
 
     public List<User> getAllUsers();
 }

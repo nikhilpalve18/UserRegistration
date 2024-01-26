@@ -9,6 +9,7 @@ import com.app.UserRegistration.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,9 +46,8 @@ public class UserServiceImpl implements UserService {
     public UserDTO getUser(String username) throws Exception {
         User user = this.userRepository.findByUsername(username);
 
-        if(user == null){
+        if(user == null)
             throw new UserNotFoundException("User not found with username " + username);
-        }
 
         return UserDTO.builder().id(user.getId()).firstName(user.getFirstName())
                 .lastName(user.getLastName()).username(user.getUsername()).mobileNumber(user.getMobileNumber()).build();
@@ -55,8 +55,13 @@ public class UserServiceImpl implements UserService {
 
     /* delete user by its Id */
     @Override
-    public void deleteUser(Long userId) {
-        this.userRepository.deleteById(userId);
+    public void deleteUser(Long userId) throws Exception{
+        if(this.userRepository.existsById(userId)){
+            this.userRepository.deleteById(userId);
+        }
+        else{
+            throw new UserNotFoundException("User not found with id " + userId);
+        }
     }
 
     /* get all the registered users */
