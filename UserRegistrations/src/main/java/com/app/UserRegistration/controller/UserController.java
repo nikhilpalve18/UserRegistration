@@ -1,7 +1,7 @@
 package com.app.UserRegistration.controller;
 
 import com.app.UserRegistration.entity.User;
-import com.app.UserRegistration.model.UserDTO;
+import com.app.UserRegistration.model.UserRequestDTO;
 import com.app.UserRegistration.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -27,8 +27,8 @@ public class UserController {
 
     @Operation(summary = "Register the new user", description = "This api helps in registering a new user")
     @PostMapping("/save-user")
-    public ResponseEntity<?> saveUser(@RequestBody @Valid UserDTO userDTO) throws Exception {
-            this.userService.createUser(userDTO);
+    public ResponseEntity<?> saveUser(@RequestBody @Valid UserRequestDTO userRequestDTO) throws Exception {
+            this.userService.createUser(userRequestDTO);
             return ResponseEntity.ok("User created successfully");
     }
 
@@ -40,15 +40,14 @@ public class UserController {
 
     @Operation(summary = "Delete user", description = "This api helps in deleting the user by userId")
     @DeleteMapping("/delete-user/{userId}")
-    public ResponseEntity<String> deleteUser(@PathVariable("userId") Long userId) throws Exception {
+    public ResponseEntity<?> deleteUser(@PathVariable("userId") Long userId) throws Exception {
             this.userService.deleteUser(userId);
             return ResponseEntity.ok("User deleted successfully");
     }
 
     @Operation(summary = "Retrieve all the users", description = "This api helps in retrieving all the users from database")
     @GetMapping("/all-users")
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = this.userService.getAllUsers();
-        return ResponseEntity.ok(users);
+    public ResponseEntity<?> getAllUsers() {
+        return ResponseEntity.ok(this.userService.getAllUsers());
     }
 }

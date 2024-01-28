@@ -7,8 +7,7 @@ import java.util.Map;
 
 @Data
 @AllArgsConstructor
-public class ApiResponse {
-    private final HttpStatus status;
+public class UserRegistrationApiResponse {
     private final String message;
     private final Map<String, String> errors;
 }

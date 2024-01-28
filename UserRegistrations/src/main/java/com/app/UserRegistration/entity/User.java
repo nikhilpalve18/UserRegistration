@@ -1,12 +1,15 @@
 package com.app.UserRegistration.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.hibernate.annotations.BatchSize;
+
+import java.util.List;
 
 @Data
 @Entity
@@ -38,8 +41,9 @@ public class User {
     })
     private String password;
 
-    @Size(min = 10, max = 10, message = "Mobile number must be 10 digits")
-    @Pattern(regexp = "^[0-9]{10}$", message = "Mobile number must contain only digits")
-    private String mobileNumber;
+    @OneToMany(targetEntity = Contact.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id_fk", referencedColumnName = "id")
+    @Valid
+    private List<Contact> contacts;
 
 }

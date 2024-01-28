@@ -3,15 +3,14 @@ package com.app.UserRegistration.service.impl;
 import com.app.UserRegistration.entity.User;
 import com.app.UserRegistration.exception.UserAlreadyPresentException;
 import com.app.UserRegistration.exception.UserNotFoundException;
-import com.app.UserRegistration.model.UserDTO;
+import com.app.UserRegistration.model.UserRequestDTO;
+import com.app.UserRegistration.model.UserResponseDTO;
 import com.app.UserRegistration.repository.UserRepository;
 import com.app.UserRegistration.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -26,10 +25,11 @@ public class UserServiceImpl implements UserService {
 
     /* Creating a new user */
     @Override
-    public void createUser(UserDTO userDTO) throws Exception {
-        User user = User.builder().firstName(userDTO.getFirstName()).
-                lastName(userDTO.getLastName()).password(userDTO.getPassword()).
-                username(userDTO.getUsername()).mobileNumber(userDTO.getMobileNumber()).build();
+    public void createUser(UserRequestDTO userRequestDTO) throws Exception {
+        System.out.println(userRequestDTO.getUser());
+        User user = User.builder().firstName(userRequestDTO.getUser().getFirstName()).
+                lastName(userRequestDTO.getUser().getLastName()).password(userRequestDTO.getUser().getPassword()).
+                username(userRequestDTO.getUser().getUsername()).contacts(userRequestDTO.getUser().getContacts()).build();
 
         /* check for duplicate users */
         User local = this.userRepository.findByUsername(user.getUsername());
@@ -43,14 +43,14 @@ public class UserServiceImpl implements UserService {
 
     /* get the details of user by its username */
     @Override
-    public UserDTO getUser(String username) throws Exception {
+    public UserResponseDTO getUser(String username) throws Exception {
         User user = this.userRepository.findByUsername(username);
 
         if(user == null)
             throw new UserNotFoundException("User not found with username " + username);
 
-        return UserDTO.builder().id(user.getId()).firstName(user.getFirstName())
-                .lastName(user.getLastName()).username(user.getUsername()).mobileNumber(user.getMobileNumber()).build();
+        return UserResponseDTO.builder().id(user.getId()).firstName(user.getFirstName())
+                .lastName(user.getLastName()).username(user.getUsername()).contacts(user.getContacts()).build();
     }
 
     /* delete user by its Id */
@@ -66,7 +66,19 @@ public class UserServiceImpl implements UserService {
 
     /* get all the registered users */
     @Override
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserResponseDTO> getAllUsers() {
+            List<User> users = this.userRepository.findAll();
+
+            return users.stream()
+                    .map(user -> UserResponseDTO.builder()
+                            .id(user.getId())
+                            .firstName(user.getFirstName())
+                            .lastName(user.getLastName())
+                            .username(user.getUsername())
+                            .contacts(user.getContacts())
+                            .build())
+                    .collect(Collectors.toList());
     }
+
+
 }
