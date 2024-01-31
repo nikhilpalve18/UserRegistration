@@ -1,0 +1,79 @@
+
+    <div class="container">
+    <form [formgroup]="registerform" (ngsubmit)="registerSubmited()" class="form border p-3 ">
+        <div class="row g-0">
+            <div class="col text-center p-2 mb-3 ">
+                <span class="fs-3"><strong>Registration Form</strong></span>
+            </div>
+        </div>
+        <br><br>
+        <div class ="row">
+            <div class ="col mb-3">
+                <label for="firtname" class="form-label">First Name: </label>
+                <input type="text" class="form-control" id="firstname" formcontrolname="firstname">
+            
+                <label for="lastname" class="form label">Last Name: </label>
+                <input type="text" class="form-control" id="lastname" formcontrolname="lastname">
+            </div>
+        </div><br>
+        <div class="row">
+            <div class="col mb-3">
+                <label for="email" class="form label">email add: </label>
+                <input type="email" class="form-control" id="email" formcontrolname="email">
+                <div class="form-text"></div>
+            </div>
+        </div><br>
+        <div class="row">
+            <div class="col ps-3 mb-3">
+                <label for="mobile" class="form-label">Mobile Number: </label>
+                <input type="text" class="form-control" id="mobile" formcontrolname="mobile">
+                <div class="form-text"></div>
+            </div>
+            <br>
+            <div class="col ps-3 mb-3">
+                <div class="m-1">Gender: </div>
+                <div class="form-check-inline">
+                    <input type="radio" class="form-check-input" name="gender" value="m" id="male" formcontrolname="gender">Male
+                </div>
+                <div class = "form-check-inline" >
+                    <input type="radio" class="form-check-input" name="gender" value="f" id="female" formcontrolname="gender">Female
+                    <label class="form-check-label" for="female"></label>
+            </div>
+            <div class = "form-check-inline" >
+                <input type="radio" class="form-check-input" name="gender" value="O" id="others" formcontrolname="gender">others
+                <label class="form-check-label" for="others"></label>
+        </div>
+        </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col mb-3">
+                <label for="pwd" class="form-label">Password: </label>
+                <input type="password" class="form-control" id="pwd" formcontrolname="pwd">
+                <div class="form-text"></div>
+            </div>
+            <br>
+            <div class="col mb-3">
+                <label for="rpwd" class="form-label"> Confirm Password: </label>
+                <input type="password" class="form-control" id="rpwd" formcontrolname="rpwd">
+                <div class="form-text"></div>
+            </div>
+            <div class="row">
+                <div class="col-6 offset-3">
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                    <br>
+                </div>
+                
+                <div class="col-6 offset-3">
+                    <div class="d-grid">
+                        <input type="reset" class="btn btn-primary">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+
