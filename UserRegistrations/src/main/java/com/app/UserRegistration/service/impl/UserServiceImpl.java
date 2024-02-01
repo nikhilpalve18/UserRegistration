@@ -7,12 +7,16 @@ import com.app.UserRegistration.model.UserRequestDTO;
 import com.app.UserRegistration.model.UserResponseDTO;
 import com.app.UserRegistration.repository.UserRepository;
 import com.app.UserRegistration.service.UserService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
     /* attributes */
     private final UserRepository userRepository;
@@ -25,60 +29,81 @@ public class UserServiceImpl implements UserService {
 
     /* Creating a new user */
     @Override
-    public void createUser(UserRequestDTO userRequestDTO) throws Exception {
-        System.out.println(userRequestDTO.getUser());
-        User user = User.builder().firstName(userRequestDTO.getUser().getFirstName()).
+    @Async
+    public CompletableFuture<Void> createUser(UserRequestDTO userRequestDTO) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+
+        try {
+            User user = User.builder().firstName(userRequestDTO.getUser().getFirstName()).
                 lastName(userRequestDTO.getUser().getLastName()).password(userRequestDTO.getUser().getPassword()).
                 username(userRequestDTO.getUser().getUsername()).contacts(userRequestDTO.getUser().getContacts()).build();
 
-        /* check for duplicate users */
-        User local = this.userRepository.findByUsername(user.getUsername());
-        if(local != null) {
-            throw new UserAlreadyPresentException("User is already present");
-        }
-        else{
+            User local = this.userRepository.findByUsername(user.getUsername());
+            if(local != null) {
+                throw new UserAlreadyPresentException("User is already present");
+            }
             this.userRepository.save(user);
+            log.info("User saved successfully by " + Thread.currentThread().getName());
+            future.complete(null);
+        } catch (Exception e) {
+            future.completeExceptionally(e);
         }
+        return future;
     }
 
     /* get the details of user by its username */
     @Override
-    public UserResponseDTO getUser(String username) throws Exception {
+    @Async
+    public CompletableFuture<UserResponseDTO> getUser(String username) throws Exception {
         User user = this.userRepository.findByUsername(username);
 
         if(user == null)
             throw new UserNotFoundException("User not found with username " + username);
 
-        return UserResponseDTO.builder().id(user.getId()).firstName(user.getFirstName())
+        UserResponseDTO userResponseDTO = UserResponseDTO.builder().id(user.getId()).firstName(user.getFirstName())
                 .lastName(user.getLastName()).username(user.getUsername()).contacts(user.getContacts()).build();
+        log.info(Thread.currentThread().getName());
+        return CompletableFuture.completedFuture(userResponseDTO);
     }
 
     /* delete user by its Id */
     @Override
-    public void deleteUser(Long userId) throws Exception{
-        if(this.userRepository.existsById(userId)){
-            this.userRepository.deleteById(userId);
+    @Async
+    public CompletableFuture<Void> deleteUser(Long userId) throws Exception{
+        CompletableFuture<Void> future = new CompletableFuture<>();
+
+        try {
+            if(this.userRepository.existsById(userId)){
+                this.userRepository.deleteById(userId);
+                log.info(Thread.currentThread().getName());
+            }
+            else{
+                throw new UserNotFoundException("Cannot delete, User not found with id " + userId);
+            }
+            log.info("User deleted successfully by " + Thread.currentThread().getName());
+            future.complete(null);
+        } catch (Exception e) {
+            future.completeExceptionally(e);
         }
-        else{
-            throw new UserNotFoundException("User not found with id " + userId);
-        }
+        return future;
     }
 
     /* get all the registered users */
     @Override
-    public List<UserResponseDTO> getAllUsers() {
-            List<User> users = this.userRepository.findAll();
+    @Async
+    public CompletableFuture<List<UserResponseDTO>> getAllUsers() {
+        List<User> users = this.userRepository.findAll();
+        log.info("Total no of users: " + users.size() + " " + Thread.currentThread().getName());
+        List<UserResponseDTO> responseDTOList = users.stream()
+                .map(user -> UserResponseDTO.builder()
+                        .id(user.getId())
+                        .firstName(user.getFirstName())
+                        .lastName(user.getLastName())
+                        .username(user.getUsername())
+                        .contacts(user.getContacts())
+                        .build())
+                .collect(Collectors.toList());
 
-            return users.stream()
-                    .map(user -> UserResponseDTO.builder()
-                            .id(user.getId())
-                            .firstName(user.getFirstName())
-                            .lastName(user.getLastName())
-                            .username(user.getUsername())
-                            .contacts(user.getContacts())
-                            .build())
-                    .collect(Collectors.toList());
+        return CompletableFuture.completedFuture(responseDTOList);
     }
-
-
 }

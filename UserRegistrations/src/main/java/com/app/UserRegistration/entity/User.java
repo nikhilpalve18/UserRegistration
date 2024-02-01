@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Fetch;
 
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class User {
     })
     private String password;
 
-    @OneToMany(targetEntity = Contact.class, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER,targetEntity = Contact.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id_fk", referencedColumnName = "id")
     @Valid
     private List<Contact> contacts;
