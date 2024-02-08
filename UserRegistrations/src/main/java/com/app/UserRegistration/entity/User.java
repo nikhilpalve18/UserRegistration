@@ -23,13 +23,13 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @NotEmpty
+    @NotEmpty(message = "Firstname cannot be empty")
     private String firstName;
 
-    @NotEmpty
+    @NotEmpty(message = "lastName cannot be empty")
     private String lastName;
 
-    @NotEmpty
+    @NotEmpty(message = "username cannot be empty")
     private String username;
 
 

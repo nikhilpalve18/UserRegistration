@@ -4,9 +4,7 @@ import com.app.UserRegistration.model.UserRequestDTO;
 import com.app.UserRegistration.model.UserResponseDTO;
 import com.app.UserRegistration.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -26,16 +24,12 @@ public class UserController {
         this.userService = userService;
     }
 
+    @Operation(summary = "Save new user", description = "This api helps in creating a new user")
     @PostMapping("/save-user")
     public CompletableFuture<ResponseEntity<String>> saveUser(@RequestBody UserRequestDTO userRequestDTO) throws Exception {
         return this.userService.createUser(userRequestDTO)
-                .thenApply(result -> ResponseEntity.ok("User created successfully"))
-                .exceptionally(ex -> {
-                    Throwable cause = (ex.getCause() != null) ? ex.getCause() : ex;
-                    return ResponseEntity.status(HttpStatus.CONFLICT).body(cause.getMessage());
-                });
+                .thenApply(result -> ResponseEntity.ok("User created successfully"));
     }
-
 
     @Operation(summary = "Get user Information", description = "This api helps in getting user information with username")
     @GetMapping("/{username}")
@@ -43,15 +37,11 @@ public class UserController {
         return this.userService.getUser(username);
     }
 
-    @Operation(summary = "Delete user", description = "This api helps in deleting the user by userId")
+    @Operation(summary = "Delete user", description = "This API helps in deleting the user by userId")
     @DeleteMapping("/delete-user/{userId}")
     public CompletableFuture<ResponseEntity<String>> deleteUser(@PathVariable("userId") Long userId) throws Exception {
         return this.userService.deleteUser(userId)
-                .thenApply(result -> ResponseEntity.ok("User deleted successfully"))
-                .exceptionally(ex -> {
-                    Throwable cause = (ex.getCause() != null) ? ex.getCause() : ex;
-                    return ResponseEntity.status(HttpStatus.CONFLICT).body(cause.getMessage());
-                });
+                .thenApply(result -> ResponseEntity.ok("User deleted successfully"));
     }
 
     @Operation(summary = "Retrieve all the users", description = "This api helps in retrieving all the users from database")

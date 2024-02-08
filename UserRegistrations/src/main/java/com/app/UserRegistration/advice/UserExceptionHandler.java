@@ -23,27 +23,7 @@ public class UserExceptionHandler {
     public ResponseEntity<String> handleValidationException(ValidationException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
-    /*
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public UserRegistrationApiResponse handleInvalidInputs(MethodArgumentNotValidException methodArgumentNotValidException){
-        Map<String, String> errors = new HashMap<>();
-        methodArgumentNotValidException.getBindingResult().getFieldErrors().forEach(error->{
-            errors.put(error.getField(), error.getDefaultMessage());
-        });
-        return new UserRegistrationApiResponse("Validation error", errors);
-    }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(ConstraintViolationException.class)
-    public UserRegistrationApiResponse handleConstraintViolationException(ConstraintViolationException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getConstraintViolations().forEach(violation ->
-                errors.put(violation.getPropertyPath().toString(), violation.getMessage())
-        );
-        return new UserRegistrationApiResponse("Validation error", errors);
-    }
-    */
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(UserAlreadyPresentException.class)
     public UserRegistrationApiResponse handleUserAlreadyPresent(UserAlreadyPresentException userAlreadyPresentException){

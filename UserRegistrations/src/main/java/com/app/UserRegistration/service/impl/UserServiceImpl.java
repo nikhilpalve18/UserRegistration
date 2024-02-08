@@ -36,7 +36,6 @@ public class UserServiceImpl implements UserService {
     @Async
     public CompletableFuture<Void> createUser(UserRequestDTO userRequestDTO) throws ValidationException {
         CompletableFuture<Void> future = new CompletableFuture<>();
-        System.out.println("Hello Validator-------------------");
         userValidator.validate(userRequestDTO);
 
         try {
@@ -46,6 +45,7 @@ public class UserServiceImpl implements UserService {
 
             User local = this.userRepository.findByUsername(user.getUsername());
             if(local != null) {
+                System.out.println("Exception thrown");;
                 throw new UserAlreadyPresentException("User is already present");
             }
             this.userRepository.save(user);
@@ -56,6 +56,8 @@ public class UserServiceImpl implements UserService {
         }
         return future;
     }
+
+
 
     /* get the details of user by its username */
     @Override
