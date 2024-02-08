@@ -27,7 +27,7 @@ public class UserController {
     }
 
     @PostMapping("/save-user")
-    public CompletableFuture<ResponseEntity<String>> saveUser(@RequestBody @Valid UserRequestDTO userRequestDTO) throws Exception {
+    public CompletableFuture<ResponseEntity<String>> saveUser(@RequestBody UserRequestDTO userRequestDTO) throws Exception {
         return this.userService.createUser(userRequestDTO)
                 .thenApply(result -> ResponseEntity.ok("User created successfully"))
                 .exceptionally(ex -> {

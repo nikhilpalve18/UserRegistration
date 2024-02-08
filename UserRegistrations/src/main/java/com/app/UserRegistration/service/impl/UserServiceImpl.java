@@ -3,10 +3,12 @@ package com.app.UserRegistration.service.impl;
 import com.app.UserRegistration.entity.User;
 import com.app.UserRegistration.exception.UserAlreadyPresentException;
 import com.app.UserRegistration.exception.UserNotFoundException;
+import com.app.UserRegistration.exception.ValidationException;
 import com.app.UserRegistration.model.UserRequestDTO;
 import com.app.UserRegistration.model.UserResponseDTO;
 import com.app.UserRegistration.repository.UserRepository;
 import com.app.UserRegistration.service.UserService;
+import com.app.UserRegistration.validation.UserValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -20,18 +22,22 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     /* attributes */
     private final UserRepository userRepository;
+    private final UserValidator userValidator;
 
     /* constructor */
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, UserValidator userValidator) {
         this.userRepository = userRepository;
+        this.userValidator = userValidator;
     }
 
 
     /* Creating a new user */
     @Override
     @Async
-    public CompletableFuture<Void> createUser(UserRequestDTO userRequestDTO) {
+    public CompletableFuture<Void> createUser(UserRequestDTO userRequestDTO) throws ValidationException {
         CompletableFuture<Void> future = new CompletableFuture<>();
+        System.out.println("Hello Validator-------------------");
+        userValidator.validate(userRequestDTO);
 
         try {
             User user = User.builder().firstName(userRequestDTO.getUser().getFirstName()).
