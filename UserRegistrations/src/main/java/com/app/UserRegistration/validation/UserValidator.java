@@ -10,8 +10,9 @@ import jakarta.validation.Validator;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Component
+
 @Validated
+@Component
 public class UserValidator {
     private final Validator validator;
 
