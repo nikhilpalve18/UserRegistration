@@ -4,32 +4,57 @@ import com.app.UserRegistration.entity.Contact;
 import com.app.UserRegistration.entity.User;
 import com.app.UserRegistration.exception.ValidationException;
 import com.app.UserRegistration.model.UserRequestDTO;
+import com.app.UserRegistration.model.UserResponseDTO;
 import com.app.UserRegistration.repository.UserRepository;
 import com.app.UserRegistration.service.UserService;
+import com.app.UserRegistration.service.UserServiceImpl;
 import com.app.UserRegistration.validation.UserValidator;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @DataJpaTest
 class UserServiceImplTest {
 
-
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
     private UserService userService;
+    protected UserValidator userValidator;
 
 
-    @Autowired
-    private UserValidator userValidator;
+
+    @BeforeEach
+    void setUp() {
+        userValidator = new UserValidator();
+        userService = new UserServiceImpl(userRepository, userValidator);
+    }
+
+    @Test
+    void getAllUsers() throws ExecutionException, InterruptedException {
+        // You can create sample users as well and save to database
+        List<UserResponseDTO> expectedUsers = new ArrayList<>();
+
+        CompletableFuture<List<UserResponseDTO>> userFuture = userService.getAllUsers();
+        List<UserResponseDTO> actualUsers;
+        actualUsers = userFuture.get();
+
+        assertEquals(0, actualUsers.size());
+
+    }
 
     @Test
     public void createUserTest() throws Exception {
@@ -39,8 +64,11 @@ class UserServiceImplTest {
         userService.createUser(userRequestDTO);
 
         User actualUser = userRepository.findByUsername(expectedUser.getUsername());
+        System.out.println(actualUser);
+
         assertNotNull(actualUser);
         assertEquals(expectedUser.getUsername(), actualUser.getUsername());
+
 
     }
 
