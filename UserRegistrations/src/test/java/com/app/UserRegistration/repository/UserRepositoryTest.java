@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 @DataJpaTest
@@ -28,7 +27,7 @@ class UserRepositoryTest {
         // when
         User userResult = userRepository.findByUsername("nikhilpalve18");
 
-        assertEquals(userResult, user);
+        assertThat(user).isEqualTo(userResult);
     }
 
     @Test
@@ -39,7 +38,7 @@ class UserRepositoryTest {
         // userRepository.save(user);
 
         // when
-        User expected = userRepository.findByUsername("nikhilpalve18");
+        User expected = userRepository.findByUsername(username);
 
         assertThat(expected).isNull();
     }

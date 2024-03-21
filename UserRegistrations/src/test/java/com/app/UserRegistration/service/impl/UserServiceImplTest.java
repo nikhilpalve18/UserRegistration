@@ -2,30 +2,23 @@ package com.app.UserRegistration.service.impl;
 
 import com.app.UserRegistration.entity.Contact;
 import com.app.UserRegistration.entity.User;
-import com.app.UserRegistration.exception.ValidationException;
 import com.app.UserRegistration.model.UserRequestDTO;
 import com.app.UserRegistration.model.UserResponseDTO;
 import com.app.UserRegistration.repository.UserRepository;
 import com.app.UserRegistration.service.UserService;
 import com.app.UserRegistration.service.UserServiceImpl;
 import com.app.UserRegistration.validation.UserValidator;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 class UserServiceImplTest {
@@ -36,7 +29,6 @@ class UserServiceImplTest {
     protected UserValidator userValidator;
 
 
-
     @BeforeEach
     void setUp() {
         userValidator = new UserValidator();
@@ -44,17 +36,29 @@ class UserServiceImplTest {
     }
 
     @Test
-    void getAllUsers() throws ExecutionException, InterruptedException {
-        // You can create sample users as well and save to database
-        List<UserResponseDTO> expectedUsers = new ArrayList<>();
+    void getAllUsersTestReturnEmptyList() throws Exception {
 
         CompletableFuture<List<UserResponseDTO>> userFuture = userService.getAllUsers();
         List<UserResponseDTO> actualUsers;
         actualUsers = userFuture.get();
 
         assertEquals(0, actualUsers.size());
-
     }
+
+    @Test
+    void getAllUsersTest() throws Exception {
+        UserRequestDTO userRequestDTO = createValidUserRequestDTO();
+        User expectedUser = createUserFromRequestDTO(userRequestDTO);
+
+        userService.createUser(userRequestDTO);
+
+        CompletableFuture<List<UserResponseDTO>> userFuture = userService.getAllUsers();
+        List<UserResponseDTO> actualUsers = userFuture.get();
+        System.out.println(actualUsers);
+
+        assertThat(1).isEqualTo(actualUsers.size());
+    }
+
 
     @Test
     public void createUserTest() throws Exception {
@@ -68,8 +72,6 @@ class UserServiceImplTest {
 
         assertNotNull(actualUser);
         assertEquals(expectedUser.getUsername(), actualUser.getUsername());
-
-
     }
 
 
@@ -99,4 +101,38 @@ class UserServiceImplTest {
 
         return UserRequestDTO.builder().user(user).build();
     }
+
+    @Test
+    public void deleteUserTest() throws Exception {
+        Long userId = 1L; // Assuming the user ID is retrieved or known
+
+        UserRequestDTO userRequestDTO = createValidUserRequestDTO();
+        User expectedUser = createUserFromRequestDTO(userRequestDTO);
+        userService.createUser(userRequestDTO);
+
+        userService.deleteUser(userId);
+
+        User deletedUser = userRepository.findById(userId).orElse(null);
+        assertNull(deletedUser, "User should be deleted");
+    }
+
+    @Test
+    public void getUserTest() throws Exception {
+        String username = "nikhilpalve18786";
+
+        UserRequestDTO userRequestDTO = createValidUserRequestDTO();
+        User expectedUser = createUserFromRequestDTO(userRequestDTO);
+        userService.createUser(userRequestDTO);
+
+
+        CompletableFuture<UserResponseDTO> userFuture = userService.getUser(username);
+        UserResponseDTO actualUser = userFuture.get();
+
+        assertNotNull(actualUser);
+        assertEquals(expectedUser.getUsername(), actualUser.getUsername());
+        assertEquals(expectedUser.getFirstName(), actualUser.getFirstName());
+        assertEquals(expectedUser.getLastName(), actualUser.getLastName());
+    }
+
+
 }
