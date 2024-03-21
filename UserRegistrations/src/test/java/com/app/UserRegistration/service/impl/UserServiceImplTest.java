@@ -8,6 +8,7 @@ import com.app.UserRegistration.repository.UserRepository;
 import com.app.UserRegistration.service.UserService;
 import com.app.UserRegistration.service.UserServiceImpl;
 import com.app.UserRegistration.validation.UserValidator;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,11 @@ class UserServiceImplTest {
         userService = new UserServiceImpl(userRepository, userValidator);
     }
 
+    @AfterEach
+    void tearDown() {
+        userRepository.deleteAll();
+    }
+
     @Test
     void getAllUsersTestReturnEmptyList() throws Exception {
 
@@ -42,7 +48,7 @@ class UserServiceImplTest {
         List<UserResponseDTO> actualUsers;
         actualUsers = userFuture.get();
 
-        assertEquals(0, actualUsers.size());
+        assertThat(actualUsers.size()).isEqualTo(0);
     }
 
     @Test
@@ -71,7 +77,7 @@ class UserServiceImplTest {
         System.out.println(actualUser);
 
         assertNotNull(actualUser);
-        assertEquals(expectedUser.getUsername(), actualUser.getUsername());
+        assertThat(actualUser.getUsername()).isEqualTo(expectedUser.getUsername());
     }
 
 
@@ -129,9 +135,11 @@ class UserServiceImplTest {
         UserResponseDTO actualUser = userFuture.get();
 
         assertNotNull(actualUser);
-        assertEquals(expectedUser.getUsername(), actualUser.getUsername());
-        assertEquals(expectedUser.getFirstName(), actualUser.getFirstName());
-        assertEquals(expectedUser.getLastName(), actualUser.getLastName());
+
+        assertThat(actualUser.getUsername()).isEqualTo(expectedUser.getUsername());
+        assertThat(actualUser.getUsername()).isEqualTo(expectedUser.getUsername());
+        assertThat(actualUser.getFirstName()).isEqualTo(expectedUser.getFirstName());
+        assertThat(actualUser.getLastName()).isEqualTo(expectedUser.getLastName());
     }
 
 
